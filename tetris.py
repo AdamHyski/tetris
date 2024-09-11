@@ -1,7 +1,9 @@
 import time
+from pynput import keyboard
 
 class tetris:
     def __init__(self, width, height, buffer) -> None:
+        self.needs_redraw = False
         self.buffer = buffer
         self.object = '█'
         self.reset_object_position()
@@ -48,8 +50,11 @@ class tetris:
     def check_collision(self, ofset = [0, 0]):
         if self.object_position[1] >= self.height -1 :
             return True
+        elif self.object_position[0] + ofset[0] < 0 or self.object_position[0] + ofset[0] >= self.width :
+            return True
         elif self.background[self.object_position[1] + ofset[1] ][self.object_position[0] + ofset[0] ] == self.object:
             return True
+
 
     def add_object_to_background(self):
         self.change_pixel(self.object_position[0], self.object_position[1], self.object)
@@ -57,13 +62,20 @@ class tetris:
     def change_pixel(self, x, y, value):
         self.background[y][x] = value
 
-    def event_loop(self):
-        while True:
-            curent_time = time.time_ns()
-            if curent_time > self.next_move_time:
-                # self.move_down()
-                self.next_move_time += self.loop_time
-                # print(curent_time, self.next_move_time )
-                self.drow_background()
-                self.drow_object()
-                self.move_down()
+    def on_press(self, key):
+        pass
+
+    def on_release(self, key):
+        if key == keyboard.KeyCode.from_char('a') or key == keyboard.Key.left:
+            self.move_left()
+            self.needs_redraw = True
+        elif key == keyboard.KeyCode.from_char('d') or key == keyboard.Key.right:
+            self.move_right()
+            self.needs_redraw = True
+        elif key == keyboard.KeyCode.from_char('s') or key == keyboard.Key.down:
+            self.move_down()
+            self.needs_redraw = True
+
+        self.drow_background()
+        self.drow_object()
+        pass

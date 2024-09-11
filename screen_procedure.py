@@ -30,14 +30,15 @@ class screen:
             for j in range(self.width-2):
                 self.screen[i+1][j+1] = self.buffer[i][j]
 
-    def print_screen(self):
+    def print_screen(self, game):
         self.clean_screen()
         for i in range(self.height+2):
             print(''.join(self.screen[i]))
 
-    def print_buffer(self):
+    def print_buffer(self, game):
         self.clean_screen()
         self.prepare_screen()
         self.draw_border()
         for i in range(self.height):
-            print(''.join(self.screen[i]))
+            print(''.join(self.screen[i]), i-1)
+        print('Position: ', game.object_position)
